@@ -317,10 +317,11 @@ int main() {
     screw_left_top.x += 2.8;
     screw_left_top.y += -.5;
 
+    // moved screw out of the way of the holder
     glm::vec3 screw_right_top = d.key_5.GetTopRight().Apply(kOrigin);
     screw_right_top.z = 0;
-    screw_right_top.x -= .8;
-    screw_right_top.y += -.5;
+    screw_right_top.x -= -4;
+    screw_right_top.y += -15.5;
 
     glm::vec3 screw_right_bottom = d.key_end.GetBottomLeft().Apply(kOrigin);
     screw_right_bottom.z = 0;
@@ -351,71 +352,18 @@ int main() {
   negative_shapes.push_back(
       d.key_backspace.GetTopLeft().Apply(Cube(50, 50, 6).TranslateZ(3)).Color("red"));
 
-  // Cut out holes for cords. Inserts can be printed to fit in.
-  Shape connector_hole = Cube(10, 20, 10).TranslateZ(12 / 2);
-  glm::vec3 connector_location1 = d.key_4.GetTopLeft().Apply(kOrigin);
-  connector_location1.z = 6;
-  connector_location1.x += 9.75;
-  glm::vec3 connector_location2 = d.key_5.GetTopLeft().Apply(kOrigin);
-  connector_location2.z = 6;
-  connector_location2.x += 10.5;
-  negative_shapes.push_back(connector_hole.Translate(connector_location1));
-  negative_shapes.push_back(connector_hole.Translate(connector_location2));
+  // Cut out hole for holder.
+  Shape holder_hole = Cube(29.0, 20.0, 12.5).TranslateZ(12 / 2);
+  glm::vec3 holder_location = d.key_4.GetTopLeft().Apply(kOrigin);
+  holder_location.z = -0.5;
+  holder_location.x += 17.5;
+  negative_shapes.push_back(holder_hole.Translate(holder_location));
 
   Shape result = UnionAll(shapes);
   // Subtracting is expensive to preview and is best to disable while testing.
   result = result.Subtract(UnionAll(negative_shapes));
   result.WriteToFile("v1_left.scad");
   result.MirrorX().WriteToFile("v1_right.scad");
-
-  {
-    double depth = 13;
-    double width = 10;
-    double top_width = width;
-    double mid_width = 6;
-    double mid_height = 5.75;
-    // Height of the bottom plate on the trrs jack.
-    double bottom_plate_height = 2;
-
-    Shape bottom_plate =
-        Cube(width, 2, depth).TranslateY(-1 - bottom_plate_height).TranslateZ(depth / 2);
-    Shape bottom_face = Cube(width, 5, 2).Translate(0, -(5 / 2 + 3), 1);
-    Shape top_face = Cube(top_width, 5, 2).Translate(0, 5 / 2 + mid_height + 1, 1);
-
-    Shape top_plate = Cube(top_width, 2, depth).TranslateY(1 + mid_height).TranslateZ(depth / 2);
-    double back_height = mid_height + 6;
-    Shape back_plate = Cube(top_width, back_height, 2).Translate(0, back_height / 2 - 4, 1 + depth);
-
-    Union(top_face, bottom_plate, bottom_face, top_plate, back_plate).WriteToFile("trrs.scad");
-  }
-
-  {
-    // trrs front plate
-    double inner_radius = 9.8 / 2;
-    double width = 3;
-    double depth = 1;
-    double fn = 20;
-
-    Circle(inner_radius + width, fn)
-        .Subtract(Circle(inner_radius, fn))
-        .LinearExtrude(depth)
-        .WriteToFile("trrs_front.scad");
-    Square(13).LinearExtrude(depth).WriteToFile("cover.scad");
-  }
-
-  {
-    // usbc adapter
-    double width = 11.8;
-    double height = 7.4;
-
-    double thickness = 4;
-    double depth = 7;
-
-    Square(11.8 + thickness * 2, 7.4 + thickness * 2)
-        .Subtract(Square(11.8, 7.4))
-        .LinearExtrude(depth)
-        .WriteToFile("usbc.scad");
-  }
 
   // Bottom plate
   {

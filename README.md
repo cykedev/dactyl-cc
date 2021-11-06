@@ -12,6 +12,14 @@ If you are interested in a smaller version see the [mini](https://github.com/mjo
 
 If you are interested in building it you can take a look at the [guide](guide/README.md). Any dactyl build guide you choose should work.
 
+Added support for loligagger's external holder.
+
+Loligagger's external holder files:
+
+* [Promicro V1](https://dactyl.siskam.link/loligagger-external-holder-promicro-v1.stl)
+* [Promicro V2](https://dactyl.siskam.link/loligagger-external-holder-promicro-v2.stl)
+* [Elite-C V1](https://dactyl.siskam.link/loligagger-external-holder-elite-c-v1.stl)
+
 ![image](https://imgur.com/CUbPLZC.jpg)
 
 CMake is the preferred way to build and leads to the fastest recompilation times. You only need to run the cmake command once.
